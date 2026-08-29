@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
+const getImageUrl = (img) => {
+  if (!img) return '';
+  if (img.startsWith('http')) return img;
+  return `https://client-projects-backend.onrender.com${img}`;
+};
+
 function App() {
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
@@ -172,9 +178,9 @@ function App() {
                         <td>
                           <div className="tbl-img-placeholder">
                             {p.images && p.images.length > 0 
-                              ? <img src={`https://client-projects-backend.onrender.com${p.images[0]}`} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                              ? <img src={getImageUrl(p.images[0])} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                               : p.image 
-                                ? <img src={`https://client-projects-backend.onrender.com${p.image}`} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                                ? <img src={getImageUrl(p.image)} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                                 : 'IMG'}
                           </div>
                         </td>

@@ -1,44 +1,49 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Product = require('./models/Product');
+const fs = require('fs');
+const path = require('path');
 
 dotenv.config();
 
-const products = [
-  { name: 'shyam kamal (250grm)', description: 'Premium Makana', category: 'Makana', image: '/uploads/default.jpg' },
-  { name: 'regular jawali', description: 'Regular Jawali', category: 'Jawali', image: '/uploads/default.jpg' },
-  { name: 'double ladi jawali', description: 'Double ladi Jawali', category: 'Jawali', image: '/uploads/default.jpg' },
-  { name: 'dry fruits jawali', description: 'Dry fruits Jawali', category: 'Jawali', image: '/uploads/default.jpg' },
-  { name: 'premium jawali', description: 'Premium Jawali', category: 'Jawali', image: '/uploads/default.jpg' },
-  { name: 'manglam (aprox 100 grm)', description: 'Manglam Saatdhan', category: 'Saatdhan', image: '/uploads/default.jpg' },
-  { name: 'Tiptur gold (small gola) 15kg beg', description: 'Small gola Nariyal', category: 'Nariyal', image: '/uploads/default.jpg' },
-  { name: 'ramdev (medium size gola 15 kg)', description: 'Medium size Nariyal', category: 'Nariyal', image: '/uploads/default.jpg' },
-  { name: 'mama- bhanja( aprox medium size gola) 25 kg beg', description: 'Medium size gola 25kg', category: 'Nariyal', image: '/uploads/default.jpg' },
-  { name: 'double hathi (Big size gola) 25 kg', description: 'Big size gola 25kg', category: 'Nariyal', image: '/uploads/default.jpg' },
-  { name: 'cartoon (15kg all size available)', description: 'Cartoon 15kg all size', category: 'Nariyal', image: '/uploads/default.jpg' },
-  { name: 'khopra 25 kg beg', description: 'Khopra 25kg', category: 'Nariyal', image: '/uploads/default.jpg' },
-  { name: 'Vivah 500grm 200grm', description: 'Vivah Peethi/ubtan', category: 'Peethi/ubtan', image: '/uploads/default.jpg' },
-  { name: 'shyam 500grm 200 grm', description: 'Shyam Peethi/ubtan', category: 'Peethi/ubtan', image: '/uploads/default.jpg' },
-  { name: 'dulhan 500grm', description: 'Dulhan Peethi/ubtan', category: 'Peethi/ubtan', image: '/uploads/default.jpg' },
-  { name: 'manglam 500grm 200grm 100grm', description: 'Manglam Peethi/ubtan', category: 'Peethi/ubtan', image: '/uploads/default.jpg' },
-  { name: 'lal mirch powder', description: 'Lal mirch powder Masala', category: 'Masala', image: '/uploads/default.jpg' },
-  { name: 'haldi powder', description: 'Haldi powder Masala', category: 'Masala', image: '/uploads/default.jpg' },
-  { name: 'dhaniya powder', description: 'Dhaniya powder Masala', category: 'Masala', image: '/uploads/default.jpg' }
-];
+mongoose.connect(process.env.MONGO_URI)
+  .then(async () => {
+    console.log('Connected to MongoDB for seeding');
+    
+    const count = await Product.countDocuments();
+    if (count > 0) {
+      console.log('Clearing existing products...');
+      await Product.deleteMany({});
+    }
 
-const seedDB = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('MongoDB connected');
-    await Product.deleteMany({});
-    console.log('Products removed');
-    await Product.insertMany(products);
-    console.log('Products seeded');
+    const dataDir = path.join(__dirname, '../frontend/public/products');
+    const files = fs.readdirSync(dataDir).filter(f => f.match(/\.(jpg|jpeg|png|webp)$/i));
+
+    const dummyProducts = [
+      { name: 'Premium Makana', category: 'Dry Fruits', description: 'High quality premium makana sourced directly from our finest farms.', price: 500 },
+      { name: 'Authentic Cumin Seeds', category: 'Spices', description: 'Fresh and highly aromatic cumin seeds for your daily cooking.', price: 300 },
+      { name: 'Rich Cashews', category: 'Dry Fruits', description: 'Crunchy, delicious, and perfectly roasted whole cashews.', price: 1200 },
+      { name: 'Pure Turmeric Powder', category: 'Spices', description: '100% Organic turmeric powder with high natural curcumin content.', price: 250 },
+      { name: 'California Almonds', category: 'Dry Fruits', description: 'Premium imported California almonds packed with essential nutrients.', price: 900 },
+      { name: 'Black Pepper Whole', category: 'Spices', description: 'Strong and extremely pungent black pepper from Kerala estates.', price: 600 }
+    ];
+
+    const frontendDomain = 'https://client-projects-frontend.onrender.com';
+
+    const productsToSave = dummyProducts.map((p, i) => {
+      // Pick 2 images per product from the available copied files
+      const imageSubset = files.slice(i * 2, (i * 2) + 2).map(f => `${frontendDomain}/products/${encodeURIComponent(f)}`);
+      return {
+        ...p,
+        images: imageSubset.length > 0 ? imageSubset : []
+      };
+    });
+
+    await Product.insertMany(productsToSave);
+    console.log(`Successfully seeded ${productsToSave.length} products!`);
     process.exit(0);
-  } catch (error) {
-    console.error('Error seeding data:', error);
+  })
+  .catch(err => {
+    console.error(err);
     process.exit(1);
-  }
-};
-
-seedDB();
+  });
