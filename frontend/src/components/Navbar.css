@@ -84,3 +84,35 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(37, 117, 252, 0.4);
 }
+
+/* Responsive Navbar */
+@media (max-width: 768px) {
+  .navbar {
+    height: auto;
+    padding: 15px 0;
+  }
+  .navbar-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .navbar-logo {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+  .nav-item {
+    margin-left: 0;
+  }
+  .nav-links {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+  .nav-button {
+    padding: 6px 15px;
+    font-size: 0.85rem;
+  }
+}

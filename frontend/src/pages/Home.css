@@ -212,8 +212,9 @@
 @media (max-width: 768px) {
   .hero-section {
     background-image: url('/WBEAL.jpg');
-    background-position: center top;
-    min-height: 50vh;
+    background-position: center center;
+    background-size: cover;
+    min-height: 35vh;
   }
   
   .brand-title {
