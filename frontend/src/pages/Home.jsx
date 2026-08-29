@@ -11,7 +11,7 @@ const allImages = Object.values(imageModules).map(mod => mod.default);
 // Parse image paths properly since they come from backend (e.g. /uploads/file.jpg)
 const getImageUrl = (img) => {
   if (typeof img === 'string' && img.startsWith('/uploads')) {
-    return `http://localhost:5000${img}`;
+    return `https://client-projects-backend.onrender.com${img}`;
   }
   return img;
 };
@@ -83,7 +83,7 @@ const Home = () => {
   const submitEnquiry = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/enquiries', {
+      await axios.post('https://client-projects-backend.onrender.com/api/enquiries', {
         ...enquiryForm,
         product: selectedProductId
       });
@@ -99,7 +99,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const { data } = await axios.get('http://localhost:5000/api/products');
+        const { data } = await axios.get('https://client-projects-backend.onrender.com/api/products');
         
         // Map data to ensure it always has images (fallback to local assets if DB is empty)
         const productsWithFallback = data.map((p, index) => {

@@ -211,9 +211,17 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .hero-section {
-    min-height: 40vh;
-    background-position: center;
-    background-size: cover;
+    background-image: url('/WBEAL.jpg');
+    background-position: center top;
+    min-height: 50vh;
+  }
+  
+  .brand-title {
+    font-size: 3rem;
+  }
+
+  .brand-subtitle {
+    font-size: 1.2rem;
   }
   
   .category-title {
@@ -221,14 +229,20 @@
   }
   
   .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
   .hero-section {
-    min-height: 30vh;
+    min-height: 40vh;
+  }
+  .brand-title {
+    font-size: 2.2rem;
+  }
+  .products-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -340,8 +354,18 @@
 }
 
 @media (max-width: 600px) {
+  .enquiry-modal {
+    width: 95%;
+    padding: 1.5rem;
+  }
   .enquiry-form .form-row {
     flex-direction: column;
     gap: 0;
+  }
+  .enquiry-modal-footer {
+    flex-direction: column;
+  }
+  .cancel-btn, .submit-btn {
+    width: 100%;
   }
 }

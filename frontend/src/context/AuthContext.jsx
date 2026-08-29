@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const res = await axios.post('https://client-projects-backend.onrender.com/api/auth/login', { email, password });
       setUser(res.data);
       setToken(res.data.token);
       localStorage.setItem('token', res.data.token);
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+      const res = await axios.post('https://client-projects-backend.onrender.com/api/auth/register', { name, email, password });
       setUser(res.data);
       setToken(res.data.token);
       localStorage.setItem('token', res.data.token);

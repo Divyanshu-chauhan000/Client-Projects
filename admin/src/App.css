@@ -306,3 +306,68 @@ td {
   gap: 12px;
   margin-top: 2rem;
 }
+
+/* Responsive Design for Admin */
+@media (max-width: 768px) {
+  .admin-container {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e2e8f0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+  }
+  
+  .sidebar-brand { 
+    padding: 0.5rem 0; 
+    border: none; 
+  }
+  
+  .sidebar-brand h2 { font-size: 1.2rem; }
+  .sidebar-brand span { display: none; }
+  
+  .sidebar-menu {
+    display: flex;
+    padding: 0;
+  }
+  
+  .sidebar-menu li {
+    padding: 0.5rem 1rem;
+    border-right: none;
+    border-bottom: 3px solid transparent;
+  }
+  
+  .sidebar-menu li.active {
+    border-right: none;
+    border-bottom-color: #4318ff;
+  }
+  
+  .topbar {
+    padding: 1rem;
+  }
+  
+  .dashboard-content {
+    padding: 1rem;
+  }
+
+  .table-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  table {
+    min-width: 700px;
+  }
+  
+  .modal {
+    width: 95%;
+    padding: 1.5rem;
+  }
+}
+

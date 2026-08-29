@@ -20,14 +20,14 @@ function App() {
   }, []);
 
   const fetchProducts = () => {
-    fetch('http://localhost:5000/api/products')
+    fetch('https://client-projects-backend.onrender.com/api/products')
       .then(res => res.json())
       .then(data => setProducts(data))
       .catch(err => console.error('Error fetching products:', err));
   };
 
   const fetchEnquiries = () => {
-    fetch('http://localhost:5000/api/enquiries')
+    fetch('https://client-projects-backend.onrender.com/api/enquiries')
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) {
@@ -87,8 +87,8 @@ function App() {
     });
 
     const url = editingProduct 
-      ? `http://localhost:5000/api/products/${editingProduct._id}` 
-      : 'http://localhost:5000/api/products';
+      ? `https://client-projects-backend.onrender.com/api/products/${editingProduct._id}` 
+      : 'https://client-projects-backend.onrender.com/api/products';
     
     const method = editingProduct ? 'PUT' : 'POST';
 
@@ -111,7 +111,7 @@ function App() {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, { method: 'DELETE' });
+      const res = await fetch(`https://client-projects-backend.onrender.com/api/products/${id}`, { method: 'DELETE' });
       if (res.ok) {
         fetchProducts();
       }
@@ -172,9 +172,9 @@ function App() {
                         <td>
                           <div className="tbl-img-placeholder">
                             {p.images && p.images.length > 0 
-                              ? <img src={`http://localhost:5000${p.images[0]}`} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                              ? <img src={`https://client-projects-backend.onrender.com${p.images[0]}`} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                               : p.image 
-                                ? <img src={`http://localhost:5000${p.image}`} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+                                ? <img src={`https://client-projects-backend.onrender.com${p.image}`} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
                                 : 'IMG'}
                           </div>
                         </td>
