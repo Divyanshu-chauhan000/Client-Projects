@@ -7,13 +7,14 @@ const { appendToGoogleSheet } = require('../utils/googleSheets');
 // @access  Public
 const createEnquiry = async (req, res, next) => {
   try {
-    const { product, name, email, message, quantity, contactNumber } = req.body;
+    const { product, name, email, address, message, quantity, contactNumber } = req.body;
 
     const enquiry = new Enquiry({
       user: req.user ? req.user._id : undefined, // Optional now
       product,
       name,
       email,
+      address,
       message,
       quantity,
       contactNumber,
@@ -33,6 +34,7 @@ const createEnquiry = async (req, res, next) => {
       name,
       email,
       contactNumber,
+      address,
       quantity,
       message,
       productName

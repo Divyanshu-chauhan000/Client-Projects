@@ -201,6 +201,7 @@ function App() {
                     <th>Customer Name</th>
                     <th>Email</th>
                     <th>Contact</th>
+                    <th>Address</th>
                     <th>Product Interest</th>
                     <th>Message</th>
                     <th>Date</th>
@@ -208,13 +209,14 @@ function App() {
                 </thead>
                 <tbody>
                   {enquiries.length === 0 ? (
-                    <tr><td colSpan="6" className="text-center">No enquiries yet.</td></tr>
+                    <tr><td colSpan="7" className="text-center">No enquiries yet.</td></tr>
                   ) : (
                     enquiries.map(e => (
                       <tr key={e._id}>
                         <td className="fw-bold">{e.name || (e.user && e.user.name) || 'Guest'}</td>
                         <td>{e.email || (e.user && e.user.email) || 'No Email'}</td>
                         <td>{e.contactNumber || 'N/A'}</td>
+                        <td><small className="text-muted" style={{display: 'block', maxWidth: '150px'}}>{e.address || 'N/A'}</small></td>
                         <td>{e.product ? e.product.name : 'General'} (Qty: {e.quantity || 1})</td>
                         <td className="text-muted">{e.message}</td>
                         <td>{new Date(e.createdAt).toLocaleDateString()}</td>

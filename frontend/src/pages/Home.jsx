@@ -199,4 +199,15 @@ const Home = () => {
                 <textarea name="message" rows="3" value={enquiryForm.message} onChange={handleEnquiryChange} required></textarea>
               </div>
               <div className="enquiry-modal-footer">
-  
+                <button type="button" className="cancel-btn" onClick={() => setShowEnquiryModal(false)}>Cancel</button>
+                <button type="submit" className="submit-btn">Submit Enquiry</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Home;

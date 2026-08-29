@@ -49,4 +49,4 @@ const appendToGoogleSheet = async (enquiryData) => {
   }
 };
 
-modul
+module.exports = { appendToGoogleSheet };

@@ -14,6 +14,10 @@ const enquirySchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  address: {
+    type: String,
+    required: true,
+  },
   product: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
