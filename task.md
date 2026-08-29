@@ -1,0 +1,4 @@
+- [ ] Rewrite `admin/src/App.css` with a premium light theme (Maroon/Gold accents, glassmorphism, nice shadows).
+- [ ] Update `admin/src/App.jsx` if needed to add some nicer HTML structure (like better icons).
+- [ ] Test UI locally (since dev server is running).
+- [ ] Write `walkthrough.md`.

@@ -1,0 +1,110 @@
+.my-enquiries-container {
+  max-width: 900px;
+  margin: 3rem auto;
+  padding: 0 20px;
+  min-height: 70vh;
+}
+
+.my-enquiries-container h2 {
+  font-family: 'Playfair Display', serif;
+  color: #5c0b0b;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  border-bottom: 2px solid #d4af37;
+  padding-bottom: 10px;
+  display: inline-block;
+}
+
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-top: 4rem;
+}
+
+.no-enquiries {
+  text-align: center;
+  padding: 3rem;
+  background: #fdfbf7;
+  border-radius: 12px;
+  border: 1px dashed #d4af37;
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.enquiries-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.enquiry-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  border-left: 5px solid #d4af37;
+  transition: transform 0.2s ease;
+}
+
+.enquiry-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.enquiry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-badge.pending { background: #fff3cd; color: #856404; }
+.status-badge.responded { background: #d4edda; color: #155724; }
+.status-badge.closed { background: #e2e3e5; color: #383d41; }
+
+.enquiry-date {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.enquiry-body h4 {
+  color: #222;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.enquiry-message, .enquiry-address, .admin-reply {
+  margin-top: 1rem;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.admin-reply {
+  background: #fffdf5;
+  border-left: 4px solid #d4af37;
+}
+
+.enquiry-message strong, .enquiry-address strong, .admin-reply strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.enquiry-message p, .enquiry-address p, .admin-reply p {
+  color: #555;
+  margin: 0;
+  line-height: 1.5;
+}

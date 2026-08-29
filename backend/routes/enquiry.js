@@ -10,10 +10,10 @@ const {
 
 router.route('/')
   .post(createEnquiry)
-  .get(getEnquiries);
+  .get(protect, isAdmin, getEnquiries);
 
-router.route('/myenquiries').get(getMyEnquiries);
+router.route('/myenquiries').get(protect, getMyEnquiries);
 
-router.route('/:id/status').patch(updateEnquiryStatus);
+router.route('/:id/status').patch(protect, isAdmin, updateEnquiryStatus);
 
 module.exports = router;

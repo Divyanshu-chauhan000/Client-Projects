@@ -8,10 +8,10 @@ import AdminRoute from './components/AdminRoute';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Home from './pages/Home';
+import MyEnquiries from './pages/MyEnquiries';
 
 // Temporary dummy pages
 const ProductDetail = () => <div>Product Detail</div>;
-const MyEnquiries = () => <div>My Enquiries</div>;
 const AdminDashboard = () => <div>Admin Dashboard</div>;
 
 function App() {
