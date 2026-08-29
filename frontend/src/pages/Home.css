@@ -1,0 +1,347 @@
+.home-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  font-family: 'Inter', sans-serif;
+}
+
+.hero-section {
+  background-image: url('/hero-banner.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  margin-bottom: 3rem;
+  border-bottom: 4px solid #d4af37;
+}
+
+.brand-title {
+  font-size: 5rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  margin: 0;
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+  font-family: 'Playfair Display', serif;
+  color: #fff;
+}
+
+.brand-subtitle {
+  font-size: 1.8rem;
+  margin-top: 1rem;
+  font-weight: 500;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  color: #f6d365;
+}
+
+.categories-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
+}
+
+.category-block {
+  margin-bottom: 4rem;
+}
+
+.category-title {
+  font-size: 2.5rem;
+  color: #5c0b0b;
+  border-bottom: 3px solid #d4af37;
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  display: inline-block;
+  font-family: 'Playfair Display', serif;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.product-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+}
+
+.product-image-placeholder {
+  height: 200px;
+  background: linear-gradient(135deg, #eeeeee, #e0e0e0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: #9e9e9e;
+  font-weight: bold;
+}
+
+.product-info {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.product-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #212121;
+  margin: 0 0 0.5rem 0;
+}
+
+.product-desc {
+  font-size: 0.95rem;
+  color: #757575;
+  margin: 0 0 1rem 0;
+  flex-grow: 1;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #d32f2f;
+  margin: 0 0 1.5rem 0;
+}
+
+.enquiry-btn {
+  background-color: #5c0b0b;
+  color: #f6d365;
+  border: 1px solid #d4af37;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.enquiry-btn:hover {
+  background-color: #d4af37;
+  color: #5c0b0b;
+}
+
+/* Image Slider Styles */
+.image-slider {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: #eee;
+  overflow: hidden;
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.slider-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  z-index: 2;
+}
+
+.slider-btn:hover {
+  background-color: rgba(0,0,0,0.8);
+}
+
+.slider-btn.prev {
+  left: 10px;
+}
+
+.slider-btn.next {
+  right: 10px;
+}
+
+.slider-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 2;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.5);
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dot.active {
+  background-color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-section {
+    min-height: 40vh;
+    background-position: center;
+    background-size: cover;
+  }
+  
+  .category-title {
+    font-size: 2rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    min-height: 30vh;
+  }
+}
+
+/* Enquiry Modal Styles */
+.enquiry-modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.enquiry-modal {
+  background: white;
+  width: 90%;
+  max-width: 600px;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.enquiry-modal h2 {
+  color: #5c0b0b;
+  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.enquiry-modal p {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.enquiry-form .form-row {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.enquiry-form .form-group {
+  flex: 1;
+  margin-bottom: 1.5rem;
+}
+
+.enquiry-form label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.enquiry-form input,
+.enquiry-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.enquiry-form input:focus,
+.enquiry-form textarea:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.enquiry-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.cancel-btn {
+  background: #f1f1f1;
+  color: #333;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submit-btn {
+  background: #5c0b0b;
+  color: #f6d365;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-btn:hover {
+  background: #d4af37;
+  color: #5c0b0b;
+}
+
+@media (max-width: 600px) {
+  .enquiry-form .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}
