@@ -21,6 +21,7 @@ function App() {
   const [formData, setFormData] = useState({ name: '', category: '', description: '', price: '', quantity: '1' });
   const [selectedImages, setSelectedImages] = useState([]);
 
+  useEffect(() => {
     fetchProducts();
     fetchEnquiries();
     fetchOrders();
