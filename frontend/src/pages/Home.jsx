@@ -10,8 +10,14 @@ const allImages = Object.values(imageModules).map(mod => mod.default);
 
 // Parse image paths properly since they come from backend (e.g. /uploads/file.jpg)
 const getImageUrl = (img) => {
-  if (typeof img === 'string' && img.startsWith('/uploads')) {
-    return `https://client-projects-backend.onrender.com${img}`;
+  if (typeof img === 'string') {
+    if (img.startsWith('/uploads')) {
+      return `https://client-projects-backend.onrender.com${img}`;
+    }
+    // Optimize Cloudinary images automatically for much faster loading
+    if (img.includes('res.cloudinary.com') && !img.includes('q_auto')) {
+      return img.replace('/upload/', '/upload/q_auto,f_auto/');
+    }
   }
   return img;
 };
@@ -52,6 +58,7 @@ const ImageSlider = ({ images }) => {
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -102,6 +109,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setLoadingProducts(true);
         const { data } = await axios.get('https://client-projects-backend.onrender.com/api/products');
         
         // Map data to ensure it always has images (fallback to local assets if DB is empty)
@@ -127,6 +135,8 @@ const Home = () => {
         setCategories(['All Products', ...uniqueCategories]);
       } catch (error) {
         console.error('Error fetching products:', error);
+      } finally {
+        setLoadingProducts(false);
       }
     };
     fetchProducts();
@@ -139,31 +149,38 @@ const Home = () => {
       </div>
 
       <div className="categories-section">
-        {categories.map(category => (
-          <div key={category} className="category-block">
-            <h2 className="category-title">{category}</h2>
-            <div className="products-grid">
-              {products.filter(p => category === 'All Products' ? true : (p.category || 'Other Products') === category).map(product => (
-                <div key={product._id} className="product-card">
-                  {product.images && product.images.length > 1 ? (
-                    <ImageSlider images={product.images} />
-                  ) : (
-                    <img 
-                      src={getImageUrl(product.images?.[0] || product.image || '/uploads/default.jpg')} 
-                      alt={product.name} 
-                      className="product-image" 
-                    />
-                  )}
-                  <div className="product-info">
-                    <h3 className="product-name">{product.name}</h3>
-                    <p className="product-desc">{product.description}</p>
-                    <button className="enquiry-btn" onClick={() => handleEnquire(product._id)}>Enquire Now</button>
-                  </div>
-                </div>
-              ))}
-            </div>
+        {loadingProducts ? (
+          <div style={{ textAlign: 'center', padding: '100px 20px', width: '100%', color: '#555' }}>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Loading Products... ⏳</h3>
+            <p>Please wait a moment. Since the backend is hosted on a free Render tier, it might take 30-50 seconds to wake up on your first visit!</p>
           </div>
-        ))}
+        ) : (
+          categories.map(category => (
+            <div key={category} className="category-block">
+              <h2 className="category-title">{category}</h2>
+              <div className="products-grid">
+                {products.filter(p => category === 'All Products' ? true : (p.category || 'Other Products') === category).map(product => (
+                  <div key={product._id} className="product-card">
+                    {product.images && product.images.length > 1 ? (
+                      <ImageSlider images={product.images} />
+                    ) : (
+                      <img 
+                        src={getImageUrl(product.images?.[0] || product.image || '/uploads/default.jpg')} 
+                        alt={product.name} 
+                        className="product-image" 
+                      />
+                    )}
+                    <div className="product-info">
+                      <h3 className="product-name">{product.name}</h3>
+                      <p className="product-desc">{product.description}</p>
+                      <button className="enquiry-btn" onClick={() => handleEnquire(product._id)}>Enquire Now</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        )}
       </div>
       
       {/* Enquiry Modal */}
