@@ -330,32 +330,32 @@ function App() {
           <div className="modal">
             <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
             <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label>Product Name</label>
-                <input type="text" name="name" value={formData.name} onChange={handleFormChange} required placeholder="e.g. Premium Makana" />
-              </div>
-              <div className="form-group">
-                <label>Category</label>
-                <input type="text" name="category" value={formData.category} onChange={handleFormChange} required placeholder="e.g. Makana" />
-              </div>
-              <div style={{display: 'flex', gap: '10px'}}>
-                <div className="form-group" style={{flex: 1}}>
+              <div className="modal-form-grid">
+                <div className="form-group">
+                  <label>Product Name</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleFormChange} required placeholder="e.g. Premium Makana" />
+                </div>
+                <div className="form-group">
+                  <label>Category</label>
+                  <input type="text" name="category" value={formData.category} onChange={handleFormChange} required placeholder="e.g. Makana" />
+                </div>
+                <div className="form-group">
                   <label>Price (₹)</label>
                   <input type="number" name="price" value={formData.price} onChange={handleFormChange} required placeholder="e.g. 500" />
                 </div>
-                <div className="form-group" style={{flex: 1}}>
+                <div className="form-group">
                   <label>Pack Size (e.g. 250gm)</label>
                   <input type="text" name="quantity" value={formData.quantity} onChange={handleFormChange} required placeholder="e.g. 250gm" />
                 </div>
-              </div>
-              <div className="form-group">
-                <label>Description</label>
-                <textarea name="description" value={formData.description} onChange={handleFormChange} required rows="3" placeholder="Product details..."></textarea>
-              </div>
-              <div className="form-group">
-                <label>{editingProduct ? 'Update Images (Optional)' : 'Upload Images'}</label>
-                <input type="file" accept="image/*" multiple onChange={handleImageChange} className="file-input" />
-                <small className="text-muted" style={{ display: 'block', marginTop: '5px' }}>You can select multiple files.</small>
+                <div className="form-group full-width">
+                  <label>Description</label>
+                  <textarea name="description" value={formData.description} onChange={handleFormChange} required rows="3" placeholder="Product details..."></textarea>
+                </div>
+                <div className="form-group full-width">
+                  <label>{editingProduct ? 'Update Images (Optional)' : 'Upload Images'}</label>
+                  <input type="file" accept="image/*" multiple onChange={handleImageChange} className="file-input" />
+                  <small className="text-muted" style={{ display: 'block', marginTop: '5px' }}>You can select multiple files.</small>
+                </div>
               </div>
               <div className="modal-footer">
                 <button type="button" className="secondary-btn" onClick={handleCloseModal}>Cancel</button>

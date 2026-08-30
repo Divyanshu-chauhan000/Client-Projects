@@ -355,6 +355,7 @@ td:last-child {
 }
 
 .form-group input[type="text"],
+.form-group input[type="number"],
 .form-group textarea {
   width: 100%;
   padding: 14px;
@@ -369,6 +370,7 @@ td:last-child {
 }
 
 .form-group input[type="text"]:focus,
+.form-group input[type="number"]:focus,
 .form-group textarea:focus {
   border-color: #d4af37;
   background: #fff;
@@ -397,6 +399,21 @@ td:last-child {
   justify-content: flex-end;
   gap: 15px;
   margin-top: 2.5rem;
+}
+
+.modal-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0 15px;
+}
+
+@media (min-width: 768px) {
+  .modal-form-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .modal-form-grid .full-width {
+    grid-column: 1 / -1;
+  }
 }
 
 /* Responsive Design for Admin */
