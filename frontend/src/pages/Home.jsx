@@ -120,8 +120,8 @@ const Home = () => {
         });
 
         setProducts(productsWithFallback);
-        const uniqueCategories = [...new Set(data.map(item => item.category))];
-        setCategories(['All', ...uniqueCategories]);
+        const uniqueCategories = [...new Set(data.map(item => item.category || 'Other Products'))];
+        setCategories(['All Products', ...uniqueCategories]);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -140,7 +140,7 @@ const Home = () => {
           <div key={category} className="category-block">
             <h2 className="category-title">{category}</h2>
             <div className="products-grid">
-              {products.filter(p => p.category === category).map(product => (
+              {products.filter(p => category === 'All Products' ? true : (p.category || 'Other Products') === category).map(product => (
                 <div key={product._id} className="product-card">
                   {product.images && product.images.length > 1 ? (
                     <ImageSlider images={product.images} />

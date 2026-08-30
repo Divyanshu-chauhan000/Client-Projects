@@ -41,7 +41,7 @@ const createProduct = async (req, res, next) => {
       throw new Error('No image uploaded');
     }
     
-    const images = req.files.map(file => `/uploads/${file.filename}`);
+    const images = req.files.map(file => file.path);
 
     const product = new Product({
       name,
@@ -75,7 +75,7 @@ const updateProduct = async (req, res, next) => {
       product.category = category || product.category;
       
       if (req.files && req.files.length > 0) {
-        const newImages = req.files.map(file => `/uploads/${file.filename}`);
+        const newImages = req.files.map(file => file.path);
         product.images = newImages;
         product.image = newImages[0];
       }
