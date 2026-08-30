@@ -198,7 +198,7 @@ function App() {
                       <th>Image</th>
                       <th>Name</th>
                       <th>Category</th>
-                      <th>Price & Qty</th>
+                      <th>Price & Pack Size</th>
                       <th>Description</th>
                       <th>Actions</th>
                     </tr>
@@ -344,8 +344,8 @@ function App() {
                   <input type="number" name="price" value={formData.price} onChange={handleFormChange} required placeholder="e.g. 500" />
                 </div>
                 <div className="form-group" style={{flex: 1}}>
-                  <label>Quantity</label>
-                  <input type="text" name="quantity" value={formData.quantity} onChange={handleFormChange} required placeholder="e.g. 1 Kg" />
+                  <label>Pack Size (e.g. 250gm)</label>
+                  <input type="text" name="quantity" value={formData.quantity} onChange={handleFormChange} required placeholder="e.g. 250gm" />
                 </div>
               </div>
               <div className="form-group">

@@ -124,6 +124,7 @@ const Home = () => {
       setCart([...cart, { 
         product: product._id, 
         name: product.name, 
+        packSize: product.quantity || '1 Pc',
         price: product.price || 0, 
         qty: 1, 
         image: product.images?.[0] || product.image || '/uploads/default.jpg' 
@@ -233,7 +234,7 @@ const Home = () => {
                     )}
                     <div className="product-info">
                       <h3 className="product-name" style={{fontWeight: 'bold', fontSize: '1.2rem'}}>{product.name}</h3>
-                      <p className="product-qty" style={{fontWeight: '600', color: '#555', margin: '5px 0'}}>{product.quantity || '1 Kg'}</p>
+                      <p className="product-qty" style={{fontWeight: '600', color: '#555', margin: '5px 0'}}>{product.quantity || '250gm'}</p>
                       <p className="product-price" style={{fontWeight: 'normal', color: '#2ecc71', fontSize: '1.1rem', marginBottom: '15px'}}>₹{product.price || 0}</p>
                       
                       <div style={{display: 'flex', gap: '10px', width: '100%'}}>
@@ -309,7 +310,7 @@ const Home = () => {
                         <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                           <img src={getImageUrl(item.image)} alt={item.name} style={{width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px'}} />
                           <div>
-                            <h4 style={{margin: 0}}>{item.name}</h4>
+                            <h4 style={{margin: 0}}>{item.name} <small style={{color: '#777', fontWeight: 'normal'}}>({item.packSize})</small></h4>
                             <p style={{margin: 0, color: '#2ecc71'}}>₹{item.price}</p>
                           </div>
                         </div>
@@ -376,7 +377,7 @@ const Home = () => {
                     <tbody>
                       {cart.map((item, idx) => (
                         <tr key={idx}>
-                          <td style={{padding: '5px 0'}}>{item.name}</td>
+                          <td style={{padding: '5px 0'}}>{item.name} <small>({item.packSize})</small></td>
                           <td style={{padding: '5px 0'}}>{item.qty}</td>
                           <td style={{padding: '5px 0', textAlign: 'right'}}>₹{item.price}</td>
                           <td style={{padding: '5px 0', textAlign: 'right'}}>₹{item.price * item.qty}</td>
