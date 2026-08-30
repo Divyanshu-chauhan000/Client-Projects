@@ -25,6 +25,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'))); // Serve s
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/product'));
 app.use('/api/enquiries', require('./routes/enquiry'));
+app.use('/api/orders', require('./routes/order'));
 
 // Default route
 app.get('/', (req, res) => {

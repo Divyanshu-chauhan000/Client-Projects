@@ -34,7 +34,7 @@ const getProductById = async (req, res, next) => {
 // @access  Private/Admin
 const createProduct = async (req, res, next) => {
   try {
-    const { name, price, description, category } = req.body;
+    const { name, price, quantity, description, category } = req.body;
     
     if (!req.files || req.files.length === 0) {
       res.status(400);
@@ -46,6 +46,7 @@ const createProduct = async (req, res, next) => {
     const product = new Product({
       name,
       price,
+      quantity,
       description,
       category,
       images,
@@ -64,13 +65,14 @@ const createProduct = async (req, res, next) => {
 // @access  Private/Admin
 const updateProduct = async (req, res, next) => {
   try {
-    const { name, price, description, category } = req.body;
+    const { name, price, quantity, description, category } = req.body;
     
     const product = await Product.findById(req.params.id);
 
     if (product) {
       product.name = name || product.name;
       product.price = price || product.price;
+      product.quantity = quantity || product.quantity;
       product.description = description || product.description;
       product.category = category || product.category;
       

@@ -74,6 +74,12 @@ const Home = () => {
     message: ''
   });
 
+  // Cart & Checkout State
+  const [cart, setCart] = useState([]);
+  const [showCartModal, setShowCartModal] = useState(false);
+  const [checkoutStep, setCheckoutStep] = useState(1); // 1: Cart, 2: Payment/QR, 3: Bill
+  const [orderId, setOrderId] = useState(null);
+
   const handleEnquire = (productId) => {
     if (!user) {
       navigate('/login');
@@ -104,6 +110,61 @@ const Home = () => {
       console.error('Failed to submit enquiry', err);
       alert('Error submitting enquiry. Please try again.');
     }
+  };
+
+  const handleShopNow = (product) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    const existing = cart.find(item => item.product === product._id);
+    if (existing) {
+      setCart(cart.map(item => item.product === product._id ? { ...item, qty: item.qty + 1 } : item));
+    } else {
+      setCart([...cart, { 
+        product: product._id, 
+        name: product.name, 
+        price: product.price || 0, 
+        qty: 1, 
+        image: product.images?.[0] || product.image || '/uploads/default.jpg' 
+      }]);
+    }
+    setShowCartModal(true);
+    setCheckoutStep(1);
+  };
+
+  const removeFromCart = (productId) => {
+    setCart(cart.filter(item => item.product !== productId));
+  };
+
+  const updateCartQty = (productId, newQty) => {
+    if (newQty < 1) return;
+    setCart(cart.map(item => item.product === productId ? { ...item, qty: newQty } : item));
+  };
+
+  const cartTotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+
+  const confirmOrder = async () => {
+    try {
+      const token = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')).token : '';
+      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+      
+      const res = await axios.post('https://client-projects-backend.onrender.com/api/orders', {
+        orderItems: cart,
+        totalPrice: cartTotal
+      }, config);
+      
+      setOrderId(res.data._id);
+      setCheckoutStep(3); // Move to bill generation
+      // Do not clear cart here, clear it when modal is closed so the bill can use it.
+    } catch (err) {
+      console.error('Failed to submit order', err);
+      alert('Error submitting order.');
+    }
+  };
+
+  const printBill = () => {
+    window.print();
   };
 
   useEffect(() => {
@@ -171,9 +232,14 @@ const Home = () => {
                       />
                     )}
                     <div className="product-info">
-                      <h3 className="product-name">{product.name}</h3>
-                      <p className="product-desc">{product.description}</p>
-                      <button className="enquiry-btn" onClick={() => handleEnquire(product._id)}>Enquire Now</button>
+                      <h3 className="product-name" style={{fontWeight: 'bold', fontSize: '1.2rem'}}>{product.name}</h3>
+                      <p className="product-qty" style={{fontWeight: '600', color: '#555', margin: '5px 0'}}>{product.quantity || '1 Kg'}</p>
+                      <p className="product-price" style={{fontWeight: 'normal', color: '#2ecc71', fontSize: '1.1rem', marginBottom: '15px'}}>₹{product.price || 0}</p>
+                      
+                      <div style={{display: 'flex', gap: '10px', width: '100%'}}>
+                        <button className="enquiry-btn" style={{flex: 1}} onClick={() => handleEnquire(product._id)}>Enquire</button>
+                        <button className="shop-now-btn" style={{flex: 1, backgroundColor: '#e67e22', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer', fontWeight: 'bold'}} onClick={() => handleShopNow(product)}>Shop Now</button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -223,6 +289,112 @@ const Home = () => {
                 <button type="submit" className="submit-btn">Submit Enquiry</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Cart & Checkout Modal */}
+      {showCartModal && (
+        <div className="enquiry-modal-backdrop">
+          <div className="enquiry-modal" style={{maxWidth: '600px', width: '90%'}}>
+            {checkoutStep === 1 && (
+              <>
+                <h2>Your Cart</h2>
+                {cart.length === 0 ? (
+                  <p>Your cart is empty.</p>
+                ) : (
+                  <div className="cart-items" style={{maxHeight: '300px', overflowY: 'auto', marginBottom: '20px'}}>
+                    {cart.map(item => (
+                      <div key={item.product} style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #eee', padding: '10px 0'}}>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                          <img src={getImageUrl(item.image)} alt={item.name} style={{width: '50px', height: '50px', objectFit: 'cover', borderRadius: '5px'}} />
+                          <div>
+                            <h4 style={{margin: 0}}>{item.name}</h4>
+                            <p style={{margin: 0, color: '#2ecc71'}}>₹{item.price}</p>
+                          </div>
+                        </div>
+                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                          <button onClick={() => updateCartQty(item.product, item.qty - 1)} style={{padding: '2px 8px'}}>-</button>
+                          <span>{item.qty}</span>
+                          <button onClick={() => updateCartQty(item.product, item.qty + 1)} style={{padding: '2px 8px'}}>+</button>
+                          <button onClick={() => removeFromCart(item.product)} style={{background: 'red', color: 'white', border: 'none', borderRadius: '3px', padding: '4px 8px', marginLeft: '10px'}}>X</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {cart.length > 0 && (
+                  <div style={{textAlign: 'right', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '20px'}}>
+                    Total: ₹{cartTotal}
+                  </div>
+                )}
+                <div className="enquiry-modal-footer">
+                  <button type="button" className="cancel-btn" onClick={() => setShowCartModal(false)}>Close</button>
+                  {cart.length > 0 && (
+                    <button type="button" className="submit-btn" onClick={() => setCheckoutStep(2)}>Checkout</button>
+                  )}
+                </div>
+              </>
+            )}
+
+            {checkoutStep === 2 && (
+              <>
+                <h2>Payment (QR Code)</h2>
+                <p>Please scan the QR code below to pay the total amount of <strong>₹{cartTotal}</strong>.</p>
+                <div style={{textAlign: 'center', margin: '20px 0'}}>
+                  {/* Placeholder for real QR code. For now using a dummy text or placeholder image. User can replace this with actual UPI QR link later */}
+                  <div style={{width: '200px', height: '200px', background: '#f5f5f5', border: '2px dashed #ccc', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
+                    <span>UPI QR Code Here</span>
+                    <small>(Owner's QR)</small>
+                  </div>
+                </div>
+                <div className="enquiry-modal-footer">
+                  <button type="button" className="cancel-btn" onClick={() => setCheckoutStep(1)}>Back to Cart</button>
+                  <button type="button" className="submit-btn" onClick={confirmOrder}>I Have Paid (Confirm Order)</button>
+                </div>
+              </>
+            )}
+
+            {checkoutStep === 3 && (
+              <div className="bill-container" id="printable-bill">
+                <h2 style={{textAlign: 'center', color: '#2ecc71'}}>Order Successful!</h2>
+                <div style={{border: '1px solid #ddd', padding: '20px', borderRadius: '8px', marginTop: '20px', background: '#fff'}}>
+                  <h3 style={{textAlign: 'center', margin: '0 0 20px 0'}}>THE MARWADI - INVOICE</h3>
+                  <p><strong>Order ID:</strong> {orderId}</p>
+                  <p><strong>Date:</strong> {new Date().toLocaleDateString()}</p>
+                  <p><strong>Customer:</strong> {user?.name}</p>
+                  <hr style={{margin: '15px 0'}} />
+                  <table style={{width: '100%', textAlign: 'left', borderCollapse: 'collapse'}}>
+                    <thead>
+                      <tr style={{borderBottom: '2px solid #eee'}}>
+                        <th style={{paddingBottom: '10px'}}>Item</th>
+                        <th style={{paddingBottom: '10px'}}>Qty</th>
+                        <th style={{paddingBottom: '10px', textAlign: 'right'}}>Price</th>
+                        <th style={{paddingBottom: '10px', textAlign: 'right'}}>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cart.map((item, idx) => (
+                        <tr key={idx}>
+                          <td style={{padding: '5px 0'}}>{item.name}</td>
+                          <td style={{padding: '5px 0'}}>{item.qty}</td>
+                          <td style={{padding: '5px 0', textAlign: 'right'}}>₹{item.price}</td>
+                          <td style={{padding: '5px 0', textAlign: 'right'}}>₹{item.price * item.qty}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div style={{textAlign: 'right', marginTop: '10px', fontSize: '1.2rem', fontWeight: 'bold'}}>
+                    Grand Total: ₹{cartTotal}
+                  </div>
+                  <p style={{textAlign: 'center', marginTop: '20px'}}>Please print this bill and keep it for your records. The admin will verify your payment shortly.</p>
+                </div>
+                <div className="enquiry-modal-footer" style={{marginTop: '20px'}}>
+                  <button type="button" className="cancel-btn" onClick={() => { setShowCartModal(false); setCart([]); }}>Close</button>
+                  <button type="button" className="submit-btn" onClick={printBill}>Download / Print Bill</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

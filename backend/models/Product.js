@@ -13,6 +13,16 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  price: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  quantity: {
+    type: String,
+    required: true,
+    default: '1',
+  },
   image: {
     type: String,
     required: false, // Legacy field

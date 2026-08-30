@@ -11,18 +11,19 @@ function App() {
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
+  const [orders, setOrders] = useState([]);
   
   // Modal State
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   
   // Form State
-  const [formData, setFormData] = useState({ name: '', category: '', description: '' });
+  const [formData, setFormData] = useState({ name: '', category: '', description: '', price: '', quantity: '1' });
   const [selectedImages, setSelectedImages] = useState([]);
 
-  useEffect(() => {
     fetchProducts();
     fetchEnquiries();
+    fetchOrders();
   }, []);
 
   const fetchProducts = () => {
@@ -49,13 +50,36 @@ function App() {
       });
   };
 
+  const fetchOrders = () => {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+    if (!userInfo.token) return; // Admin should be logged in realistically, but let's just pass token if it exists.
+    
+    fetch('https://client-projects-backend.onrender.com/api/orders', {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setOrders(data);
+        } else {
+          setOrders([]);
+        }
+      })
+      .catch(err => {
+        console.error('Error fetching orders:', err);
+        setOrders([]);
+      });
+  };
+
   const handleOpenModal = (product = null) => {
     if (product) {
       setEditingProduct(product);
-      setFormData({ name: product.name, category: product.category, description: product.description });
+      setFormData({ name: product.name, category: product.category, description: product.description, price: product.price || '', quantity: product.quantity || '1' });
     } else {
       setEditingProduct(null);
-      setFormData({ name: '', category: '', description: '' });
+      setFormData({ name: '', category: '', description: '', price: '', quantity: '1' });
     }
     setSelectedImages([]);
     setShowModal(true);
@@ -64,7 +88,7 @@ function App() {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingProduct(null);
-    setFormData({ name: '', category: '', description: '' });
+    setFormData({ name: '', category: '', description: '', price: '', quantity: '1' });
     setSelectedImages([]);
   };
 
@@ -87,6 +111,8 @@ function App() {
     data.append('name', formData.name);
     data.append('category', formData.category);
     data.append('description', formData.description);
+    data.append('price', formData.price);
+    data.append('quantity', formData.quantity);
     
     selectedImages.forEach((file) => {
       data.append('images', file);
@@ -141,13 +167,16 @@ function App() {
           <li className={activeTab === 'enquiries' ? 'active' : ''} onClick={() => setActiveTab('enquiries')}>
             <span className="icon">💬</span> Enquiries
           </li>
+          <li className={activeTab === 'orders' ? 'active' : ''} onClick={() => setActiveTab('orders')}>
+            <span className="icon">🛒</span> Orders
+          </li>
         </ul>
       </aside>
 
       {/* Main Content */}
       <main className="main-content">
         <header className="topbar">
-          <h1>{activeTab === 'products' ? 'Product Management' : 'Customer Enquiries'}</h1>
+          <h1>{activeTab === 'products' ? 'Product Management' : activeTab === 'enquiries' ? 'Customer Enquiries' : 'Order Management'}</h1>
           <div className="topbar-user">
             <span className="avatar">A</span>
             <span>Admin User</span>
@@ -168,6 +197,7 @@ function App() {
                       <th>Image</th>
                       <th>Name</th>
                       <th>Category</th>
+                      <th>Price & Qty</th>
                       <th>Description</th>
                       <th>Actions</th>
                     </tr>
@@ -186,6 +216,7 @@ function App() {
                         </td>
                         <td className="fw-bold">{p.name}</td>
                         <td><span className="badge">{p.category}</span></td>
+                        <td>₹{p.price || 0} / {p.quantity || '1'}</td>
                         <td className="text-muted">{p.description?.substring(0, 40)}...</td>
                         <td>
                           <button className="action-btn edit" onClick={() => handleOpenModal(p)}>Edit</button>
@@ -233,6 +264,62 @@ function App() {
               </table>
             </div>
           )}
+
+          {activeTab === 'orders' && (
+            <div className="table-card">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Items</th>
+                    <th>Total Price</th>
+                    <th>Payment Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.length === 0 ? (
+                    <tr><td colSpan="7" className="text-center">No orders yet.</td></tr>
+                  ) : (
+                    orders.map(o => (
+                      <tr key={o._id}>
+                        <td><small>{o._id.substring(o._id.length - 6)}</small></td>
+                        <td className="fw-bold">{o.user?.name || 'Unknown'}</td>
+                        <td>
+                          {o.orderItems.map((item, idx) => (
+                            <div key={idx} style={{fontSize: '0.85rem'}}>{item.name} (x{item.qty})</div>
+                          ))}
+                        </td>
+                        <td className="fw-bold text-primary">₹{o.totalPrice}</td>
+                        <td>
+                          <span className={`badge ${o.paymentStatus === 'Verified' ? 'bg-success' : 'bg-warning'}`}>
+                            {o.paymentStatus}
+                          </span>
+                        </td>
+                        <td>{new Date(o.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          {o.paymentStatus !== 'Verified' && (
+                            <button className="action-btn edit" onClick={async () => {
+                              if(window.confirm('Mark this payment as verified?')) {
+                                const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+                                await fetch(`https://client-projects-backend.onrender.com/api/orders/${o._id}/verify`, {
+                                  method: 'PUT',
+                                  headers: { Authorization: `Bearer ${userInfo.token}` }
+                                });
+                                fetchOrders();
+                              }
+                            }}>Verify Payment</button>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </main>
 
@@ -249,6 +336,16 @@ function App() {
               <div className="form-group">
                 <label>Category</label>
                 <input type="text" name="category" value={formData.category} onChange={handleFormChange} required placeholder="e.g. Makana" />
+              </div>
+              <div style={{display: 'flex', gap: '10px'}}>
+                <div className="form-group" style={{flex: 1}}>
+                  <label>Price (₹)</label>
+                  <input type="number" name="price" value={formData.price} onChange={handleFormChange} required placeholder="e.g. 500" />
+                </div>
+                <div className="form-group" style={{flex: 1}}>
+                  <label>Quantity</label>
+                  <input type="text" name="quantity" value={formData.quantity} onChange={handleFormChange} required placeholder="e.g. 1 Kg" />
+                </div>
               </div>
               <div className="form-group">
                 <label>Description</label>
