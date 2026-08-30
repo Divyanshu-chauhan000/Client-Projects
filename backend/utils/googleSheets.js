@@ -2,10 +2,11 @@ const { google } = require('googleapis');
 
 const appendToGoogleSheet = async (enquiryData) => {
   try {
-    const { GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, GOOGLE_SHEET_ID } = process.env;
+    const { GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY } = process.env;
+    const SHEET_ID = process.env.GOOGLE_SHEETS_ID || process.env.GOOGLE_SHEET_ID;
 
     // Check if credentials exist
-    if (!GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY || !GOOGLE_SHEET_ID) {
+    if (!GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY || !SHEET_ID) {
       console.warn("Google Sheets credentials are not set in .env. Skipping Google Docs integration.");
       return;
     }
@@ -22,7 +23,7 @@ const appendToGoogleSheet = async (enquiryData) => {
 
     // Assuming the sheet has columns: Date, Name, Email, Phone, Address, Product, Quantity, Message
     const request = {
-      spreadsheetId: GOOGLE_SHEET_ID,
+      spreadsheetId: SHEET_ID,
       range: 'Sheet1!A:H', // Adjusted range for Address column
       valueInputOption: 'USER_ENTERED',
       insertDataOption: 'INSERT_ROWS',

@@ -83,10 +83,13 @@ const Home = () => {
   const submitEnquiry = async (e) => {
     e.preventDefault();
     try {
+      const token = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')).token : '';
+      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+      
       await axios.post('https://client-projects-backend.onrender.com/api/enquiries', {
         ...enquiryForm,
         product: selectedProductId
-      });
+      }, config);
       alert('Your enquiry has been submitted successfully! We will contact you soon.');
       setShowEnquiryModal(false);
       setEnquiryForm({ name: '', email: '', contactNumber: '', address: '', quantity: 1, message: '' });

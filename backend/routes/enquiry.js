@@ -10,7 +10,7 @@ const {
 
 router.route('/')
   .post(createEnquiry)
-  .get(protect, isAdmin, getEnquiries);
+  .get(getEnquiries);
 
 router.route('/myenquiries').get(protect, getMyEnquiries);
 

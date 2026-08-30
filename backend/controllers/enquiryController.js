@@ -7,10 +7,22 @@ const { appendToGoogleSheet } = require('../utils/googleSheets');
 // @access  Public
 const createEnquiry = async (req, res, next) => {
   try {
+    let userId = undefined;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      try {
+        const token = req.headers.authorization.split(' ')[1];
+        const jwt = require('jsonwebtoken');
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        userId = decoded.id;
+      } catch (err) {
+        console.error('Optional auth failed:', err.message);
+      }
+    }
+
     const { product, name, email, address, message, quantity, contactNumber } = req.body;
 
     const enquiry = new Enquiry({
-      user: req.user ? req.user._id : undefined, // Optional now
+      user: userId, // Use extracted user ID
       product,
       name,
       email,
