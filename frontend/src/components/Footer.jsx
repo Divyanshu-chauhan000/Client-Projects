@@ -19,8 +19,8 @@ const Footer = () => {
         </div>
         <div className="footer-section">
           <h4>Contact Us</h4>
-          <p>Email: contact@themarwadi.com</p>
-          <p>Phone: +91 98765 43210</p>
+          <p>Email: themarwadi2113@gmail.com</p>
+          <p>Phone: +91 9414227607</p>
         </div>
       </div>
       <div className="footer-bottom">
