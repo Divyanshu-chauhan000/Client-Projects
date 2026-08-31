@@ -81,6 +81,7 @@ const Home = () => {
   const [showCartModal, setShowCartModal] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState(1); // 1: Cart, 2: Payment/QR, 3: Bill
   const [orderId, setOrderId] = useState(null);
+  const [paymentScreenshot, setPaymentScreenshot] = useState(null);
 
   const handleEnquire = (productId) => {
     if (!user) {
@@ -149,13 +150,19 @@ const Home = () => {
 
   const confirmOrder = async () => {
     try {
+      if (!paymentScreenshot) {
+        alert('Please upload a screenshot of your payment.');
+        return;
+      }
       const token = localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo')).token : '';
-      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+      const config = token ? { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } } : { headers: { 'Content-Type': 'multipart/form-data' } };
       
-      const res = await axios.post('https://client-projects-backend.onrender.com/api/orders', {
-        orderItems: cart,
-        totalPrice: cartTotal
-      }, config);
+      const formData = new FormData();
+      formData.append('orderItems', JSON.stringify(cart));
+      formData.append('totalPrice', cartTotal);
+      formData.append('screenshot', paymentScreenshot);
+      
+      const res = await axios.post('https://client-projects-backend.onrender.com/api/orders', formData, config);
       
       setOrderId(res.data._id);
       setCheckoutStep(3); // Move to bill generation
@@ -348,6 +355,16 @@ const Home = () => {
                   <div style={{width: '250px', height: '250px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}}>
                     <img src={qrImage} alt="UPI QR Code" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                   </div>
+                </div>
+                <div style={{margin: '20px 0'}}>
+                  <label style={{display: 'block', marginBottom: '8px', fontWeight: 'bold'}}>Upload Payment Screenshot *</label>
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    onChange={(e) => setPaymentScreenshot(e.target.files[0])}
+                    style={{width: '100%', padding: '10px', border: '1px solid #ccc', borderRadius: '5px'}}
+                  />
+                  {paymentScreenshot && <p style={{color: '#2ecc71', marginTop: '5px', fontSize: '0.9rem'}}>Screenshot selected: {paymentScreenshot.name}</p>}
                 </div>
                 <div className="enquiry-modal-footer">
                   <button type="button" className="cancel-btn" onClick={() => setCheckoutStep(1)}>Back to Cart</button>

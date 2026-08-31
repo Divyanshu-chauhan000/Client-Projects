@@ -32,6 +32,10 @@ const orderSchema = new mongoose.Schema({
   paymentReference: {
     type: String,
     required: false, // In case user enters transaction ID later
+  },
+  paymentScreenshot: {
+    type: String,
+    required: false,
   }
 }, {
   timestamps: true,

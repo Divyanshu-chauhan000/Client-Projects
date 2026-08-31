@@ -5,9 +5,18 @@ const Order = require('../models/Order');
 // @access  Private
 const addOrderItems = async (req, res, next) => {
   try {
-    const { orderItems, totalPrice } = req.body;
+    let { orderItems, totalPrice } = req.body;
+    
+    // If orderItems comes as a string (from FormData), parse it
+    if (typeof orderItems === 'string') {
+      try {
+        orderItems = JSON.parse(orderItems);
+      } catch (err) {
+        return res.status(400).json({ message: 'Invalid orderItems format' });
+      }
+    }
 
-    if (orderItems && orderItems.length === 0) {
+    if (!orderItems || orderItems.length === 0) {
       res.status(400);
       throw new Error('No order items');
     } else {
@@ -16,6 +25,7 @@ const addOrderItems = async (req, res, next) => {
         orderItems,
         totalPrice,
         paymentStatus: 'Pending Verification',
+        paymentScreenshot: req.file ? req.file.path : undefined,
       });
 
       const createdOrder = await order.save();

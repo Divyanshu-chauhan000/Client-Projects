@@ -6,9 +6,10 @@ const {
   getOrders,
   verifyPayment,
 } = require('../controllers/orderController');
+const upload = require('../middleware/uploadMiddleware');
 
 router.route('/')
-  .post(protect, addOrderItems)
+  .post(protect, upload.single('screenshot'), addOrderItems)
   .get(protect, isAdmin, getOrders);
 
 router.route('/:id/verify')
