@@ -223,7 +223,7 @@ const Home = () => {
         {loadingProducts ? (
           <div style={{ textAlign: 'center', padding: '100px 20px', width: '100%', color: '#555' }}>
             <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>Loading Products... ⏳</h3>
-            <p>Please wait a moment. Since the backend is hosted on a free Render tier, it might take 30-50 seconds to wake up on your first visit!</p>
+            <p>Please wait a moment</p>
           </div>
         ) : (
           categories.map(category => (
