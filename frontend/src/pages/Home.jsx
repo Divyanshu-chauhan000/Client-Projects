@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 import './Home.css';
+import qrImage from '../assets/data/qrcode_cropped.jpeg';
+
 
 // Import all images from the data folder dynamically as a fallback
 const imageModules = import.meta.glob('../assets/data/*.{jpg,jpeg,png,webp}', { eager: true });
@@ -343,10 +345,8 @@ const Home = () => {
                 <h2>Payment (QR Code)</h2>
                 <p>Please scan the QR code below to pay the total amount of <strong>₹{cartTotal}</strong>.</p>
                 <div style={{textAlign: 'center', margin: '20px 0'}}>
-                  {/* Placeholder for real QR code. For now using a dummy text or placeholder image. User can replace this with actual UPI QR link later */}
-                  <div style={{width: '200px', height: '200px', background: '#f5f5f5', border: '2px dashed #ccc', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column'}}>
-                    <span>UPI QR Code Here</span>
-                    <small>(Owner's QR)</small>
+                  <div style={{width: '250px', height: '250px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '10px', boxShadow: '0 4px 8px rgba(0,0,0,0.1)'}}>
+                    <img src={qrImage} alt="UPI QR Code" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                   </div>
                 </div>
                 <div className="enquiry-modal-footer">
