@@ -5,7 +5,7 @@ const Order = require('../models/Order');
 // @access  Private
 const addOrderItems = async (req, res, next) => {
   try {
-    let { orderItems, totalPrice } = req.body;
+    let { orderItems, totalPrice, customerName, mobileNumber, shippingAddress } = req.body;
     
     // If orderItems comes as a string (from FormData), parse it
     if (typeof orderItems === 'string') {
@@ -24,6 +24,9 @@ const addOrderItems = async (req, res, next) => {
         user: req.user._id, // Assuming protect middleware adds user to req
         orderItems,
         totalPrice,
+        customerName,
+        mobileNumber,
+        shippingAddress,
         paymentStatus: 'Pending Verification',
         paymentScreenshot: req.file ? req.file.path : undefined,
       });

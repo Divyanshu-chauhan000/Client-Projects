@@ -79,9 +79,14 @@ const Home = () => {
   // Cart & Checkout State
   const [cart, setCart] = useState([]);
   const [showCartModal, setShowCartModal] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState(1); // 1: Cart, 2: Payment/QR, 3: Bill
+  const [checkoutStep, setCheckoutStep] = useState(1); // 1: Cart, 2: Details, 3: Payment/QR, 4: Bill
   const [orderId, setOrderId] = useState(null);
   const [paymentScreenshot, setPaymentScreenshot] = useState(null);
+  const [checkoutDetails, setCheckoutDetails] = useState({
+    name: user?.name || '',
+    mobileNumber: '',
+    address: ''
+  });
 
   const handleEnquire = (productId) => {
     if (!user) {
@@ -160,12 +165,15 @@ const Home = () => {
       const formData = new FormData();
       formData.append('orderItems', JSON.stringify(cart));
       formData.append('totalPrice', cartTotal);
+      formData.append('customerName', checkoutDetails.name);
+      formData.append('mobileNumber', checkoutDetails.mobileNumber);
+      formData.append('shippingAddress', checkoutDetails.address);
       formData.append('screenshot', paymentScreenshot);
       
       const res = await axios.post('https://client-projects-backend.onrender.com/api/orders', formData, config);
       
       setOrderId(res.data._id);
-      setCheckoutStep(3); // Move to bill generation
+      setCheckoutStep(4); // Move to bill generation
       // Do not clear cart here, clear it when modal is closed so the bill can use it.
     } catch (err) {
       console.error('Failed to submit order', err);
@@ -349,6 +357,53 @@ const Home = () => {
 
             {checkoutStep === 2 && (
               <>
+                <h2>Delivery Details</h2>
+                <p>Please enter your details to proceed with the order.</p>
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    setCheckoutStep(3);
+                  }}
+                  className="enquiry-form"
+                >
+                  <div className="form-group">
+                    <label>Full Name *</label>
+                    <input 
+                      type="text" 
+                      value={checkoutDetails.name} 
+                      onChange={(e) => setCheckoutDetails({...checkoutDetails, name: e.target.value})} 
+                      required 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Mobile Number *</label>
+                    <input 
+                      type="text" 
+                      value={checkoutDetails.mobileNumber} 
+                      onChange={(e) => setCheckoutDetails({...checkoutDetails, mobileNumber: e.target.value})} 
+                      required 
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Delivery Address *</label>
+                    <textarea 
+                      rows="3" 
+                      value={checkoutDetails.address} 
+                      onChange={(e) => setCheckoutDetails({...checkoutDetails, address: e.target.value})} 
+                      required 
+                      placeholder="Complete address with pincode"
+                    ></textarea>
+                  </div>
+                  <div className="enquiry-modal-footer">
+                    <button type="button" className="cancel-btn" onClick={() => setCheckoutStep(1)}>Back to Cart</button>
+                    <button type="submit" className="submit-btn">Proceed to Payment</button>
+                  </div>
+                </form>
+              </>
+            )}
+
+            {checkoutStep === 3 && (
+              <>
                 <h2>Payment (QR Code)</h2>
                 <p>Please scan the QR code below to pay the total amount of <strong>₹{cartTotal}</strong>.</p>
                 <div style={{textAlign: 'center', margin: '20px 0'}}>
@@ -367,13 +422,13 @@ const Home = () => {
                   {paymentScreenshot && <p style={{color: '#2ecc71', marginTop: '5px', fontSize: '0.9rem'}}>Screenshot selected: {paymentScreenshot.name}</p>}
                 </div>
                 <div className="enquiry-modal-footer">
-                  <button type="button" className="cancel-btn" onClick={() => setCheckoutStep(1)}>Back to Cart</button>
+                  <button type="button" className="cancel-btn" onClick={() => setCheckoutStep(2)}>Back to Details</button>
                   <button type="button" className="submit-btn" onClick={confirmOrder}>I Have Paid (Confirm Order)</button>
                 </div>
               </>
             )}
 
-            {checkoutStep === 3 && (
+            {checkoutStep === 4 && (
               <div className="bill-container" id="printable-bill">
                 <h2 style={{textAlign: 'center', color: '#2ecc71'}}>Order Successful!</h2>
                 <div style={{border: '1px solid #ddd', padding: '20px', borderRadius: '8px', marginTop: '20px', background: '#fff'}}>

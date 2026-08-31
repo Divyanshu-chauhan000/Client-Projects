@@ -24,6 +24,18 @@ const orderSchema = new mongoose.Schema({
     required: true,
     default: 0.0,
   },
+  customerName: {
+    type: String,
+    required: true,
+  },
+  mobileNumber: {
+    type: String,
+    required: true,
+  },
+  shippingAddress: {
+    type: String,
+    required: true,
+  },
   paymentStatus: {
     type: String,
     required: true,
