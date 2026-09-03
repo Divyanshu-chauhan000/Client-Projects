@@ -1,0 +1,169 @@
+.video-section-container {
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  text-align: center;
+  overflow: hidden;
+}
+
+.video-section-title {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+/* Slider Layout */
+.video-slider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.slider-nav {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.slider-nav:hover {
+  background: rgba(0,0,0,0.8);
+}
+
+.slider-nav.prev-btn {
+  left: -50px;
+}
+
+.slider-nav.next-btn {
+  right: -50px;
+}
+
+.video-slider-track-wrapper {
+  width: 220px; /* Width of a single slide */
+  overflow: visible; /* Let surrounding slides overflow so we can see them */
+}
+
+@media (min-width: 600px) {
+  .video-slider-track-wrapper {
+    width: 260px; /* Reduced from 350px */
+  }
+}
+
+.video-slider-track {
+  display: flex;
+  gap: 15px; /* Reduced gap */
+  transition: transform 0.5s ease-in-out;
+}
+
+.video-slide-card {
+  flex: 0 0 100%;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  background-color: #000;
+  aspect-ratio: 9/16;
+  max-height: 460px; /* Limit max height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  cursor: pointer;
+}
+
+.video-slide-card.inactive {
+  transform: scale(0.85);
+  opacity: 0.5;
+}
+
+.video-slide-card.active {
+  transform: scale(1);
+  opacity: 1;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+}
+
+.video-player {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-active-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 15px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.8) 100%);
+  pointer-events: none; /* Let clicks pass through except for buttons inside */
+}
+
+.mute-icon-btn {
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(5px);
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 1.5rem;
+  color: white;
+  cursor: pointer;
+  pointer-events: auto; /* Enable clicks on this specific button */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+}
+
+.mute-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.video-info {
+  text-align: left;
+}
+
+.video-info h3 {
+  color: white;
+  margin: 0;
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Dots */
+.slider-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 30px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.dot.active {
+  background: #e67e22;
+  transform: scale(1.3);
+}

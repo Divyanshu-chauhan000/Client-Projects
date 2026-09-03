@@ -26,6 +26,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/products', require('./routes/product'));
 app.use('/api/enquiries', require('./routes/enquiry'));
 app.use('/api/orders', require('./routes/order'));
+app.use('/api/videos', require('./routes/video'));
 
 // Default route
 app.get('/', (req, res) => {

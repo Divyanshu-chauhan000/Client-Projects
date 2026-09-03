@@ -12,6 +12,7 @@ function App() {
   const [products, setProducts] = useState([]);
   const [enquiries, setEnquiries] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [videos, setVideos] = useState([]);
   
   // Modal State
   const [showModal, setShowModal] = useState(false);
@@ -25,6 +26,7 @@ function App() {
     fetchProducts();
     fetchEnquiries();
     fetchOrders();
+    fetchVideos();
   }, []);
 
   const fetchProducts = () => {
@@ -74,6 +76,19 @@ function App() {
       });
   };
 
+  const fetchVideos = () => {
+    fetch('https://client-projects-backend.onrender.com/api/videos')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setVideos(data);
+        } else {
+          setVideos([]);
+        }
+      })
+      .catch(err => console.error('Error fetching videos:', err));
+  };
+
   const handleOpenModal = (product = null) => {
     if (product) {
       setEditingProduct(product);
@@ -99,6 +114,39 @@ function App() {
 
   const handleImageChange = (e) => {
     setSelectedImages(Array.from(e.target.files));
+  };
+
+  const handleVideoUploadSubmit = async (e) => {
+    e.preventDefault();
+    if (selectedImages.length === 0) {
+      return alert('Please select a video file.');
+    }
+
+    const data = new FormData();
+    data.append('title', formData.name); // Using name field for title
+    data.append('video', selectedImages[0]);
+
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
+    try {
+      const res = await fetch('https://client-projects-backend.onrender.com/api/videos', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`
+        },
+        body: data
+      });
+      if (res.ok) {
+        alert('Video uploaded successfully!');
+        handleCloseModal();
+        fetchVideos();
+      } else {
+        alert('Operation failed.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error.');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -153,6 +201,23 @@ function App() {
     }
   };
 
+  const handleDeleteVideo = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this video?')) return;
+    
+    try {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+      const res = await fetch(`https://client-projects-backend.onrender.com/api/videos/${id}`, { 
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${userInfo.token}` }
+      });
+      if (res.ok) {
+        fetchVideos();
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="admin-container">
       {/* Sidebar */}
@@ -171,13 +236,16 @@ function App() {
           <li className={activeTab === 'orders' ? 'active' : ''} onClick={() => setActiveTab('orders')}>
             <span className="icon">🛒</span> Orders
           </li>
+          <li className={activeTab === 'videos' ? 'active' : ''} onClick={() => setActiveTab('videos')}>
+            <span className="icon">🎥</span> Videos
+          </li>
         </ul>
       </aside>
 
       {/* Main Content */}
       <main className="main-content">
         <header className="topbar">
-          <h1>{activeTab === 'products' ? 'Product Management' : activeTab === 'enquiries' ? 'Customer Enquiries' : 'Order Management'}</h1>
+          <h1>{activeTab === 'products' ? 'Product Management' : activeTab === 'enquiries' ? 'Customer Enquiries' : activeTab === 'orders' ? 'Order Management' : 'Video Management'}</h1>
           <div className="topbar-user">
             <span className="avatar">A</span>
             <span>Admin User</span>
@@ -321,45 +389,86 @@ function App() {
               </table>
             </div>
           )}
+
+          {activeTab === 'videos' && (
+            <>
+              <div className="content-header">
+                <h3>All Videos ({videos.length})</h3>
+                <button className="primary-btn" onClick={() => handleOpenModal()}>+ Add New Video</button>
+              </div>
+              <div className="table-card">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Preview</th>
+                      <th>Title</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {videos.map(v => (
+                      <tr key={v._id}>
+                        <td>
+                          <div className="tbl-img-placeholder" style={{ width: '120px' }}>
+                            <video src={v.videoUrl} style={{ width: '100%', borderRadius: '8px' }} controls={false} muted />
+                          </div>
+                        </td>
+                        <td className="fw-bold">{v.title}</td>
+                        <td>{new Date(v.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          <button className="action-btn delete" onClick={() => handleDeleteVideo(v._id)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
         </div>
       </main>
 
-      {/* Product Form Modal */}
+      {/* Product / Video Form Modal */}
       {showModal && (
         <div className="modal-backdrop">
           <div className="modal">
-            <h2>{editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
-            <form onSubmit={handleSubmit}>
+            <h2>{activeTab === 'videos' ? 'Upload New Video' : editingProduct ? 'Edit Product' : 'Add New Product'}</h2>
+            <form onSubmit={activeTab === 'videos' ? handleVideoUploadSubmit : handleSubmit}>
               <div className="modal-form-grid">
-                <div className="form-group">
-                  <label>Product Name</label>
-                  <input type="text" name="name" value={formData.name} onChange={handleFormChange} required placeholder="e.g. Premium Makana" />
-                </div>
-                <div className="form-group">
-                  <label>Category</label>
-                  <input type="text" name="category" value={formData.category} onChange={handleFormChange} required placeholder="e.g. Makana" />
-                </div>
-                <div className="form-group">
-                  <label>Price (₹)</label>
-                  <input type="number" name="price" value={formData.price} onChange={handleFormChange} required placeholder="e.g. 500" />
-                </div>
-                <div className="form-group">
-                  <label>Pack Size (e.g. 250gm)</label>
-                  <input type="text" name="quantity" value={formData.quantity} onChange={handleFormChange} required placeholder="e.g. 250gm" />
-                </div>
                 <div className="form-group full-width">
-                  <label>Description</label>
-                  <textarea name="description" value={formData.description} onChange={handleFormChange} required rows="3" placeholder="Product details..."></textarea>
+                  <label>{activeTab === 'videos' ? 'Video Title' : 'Product Name'}</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleFormChange} required placeholder={activeTab === 'videos' ? 'e.g. Promo Video' : 'e.g. Premium Makana'} />
                 </div>
+                {activeTab !== 'videos' && (
+                  <>
+                    <div className="form-group">
+                      <label>Category</label>
+                      <input type="text" name="category" value={formData.category} onChange={handleFormChange} required placeholder="e.g. Makana" />
+                    </div>
+                    <div className="form-group">
+                      <label>Price (₹)</label>
+                      <input type="number" name="price" value={formData.price} onChange={handleFormChange} required placeholder="e.g. 500" />
+                    </div>
+                    <div className="form-group">
+                      <label>Pack Size (e.g. 250gm)</label>
+                      <input type="text" name="quantity" value={formData.quantity} onChange={handleFormChange} required placeholder="e.g. 250gm" />
+                    </div>
+                    <div className="form-group full-width">
+                      <label>Description</label>
+                      <textarea name="description" value={formData.description} onChange={handleFormChange} required rows="3" placeholder="Product details..."></textarea>
+                    </div>
+                  </>
+                )}
                 <div className="form-group full-width">
-                  <label>{editingProduct ? 'Update Images (Optional)' : 'Upload Images'}</label>
-                  <input type="file" accept="image/*" multiple onChange={handleImageChange} className="file-input" />
-                  <small className="text-muted" style={{ display: 'block', marginTop: '5px' }}>You can select multiple files.</small>
+                  <label>{activeTab === 'videos' ? 'Upload Video (mp4, webm)' : editingProduct ? 'Update Images (Optional)' : 'Upload Images'}</label>
+                  <input type="file" accept={activeTab === 'videos' ? 'video/*' : 'image/*'} multiple={activeTab !== 'videos'} onChange={handleImageChange} className="file-input" />
+                  <small className="text-muted" style={{ display: 'block', marginTop: '5px' }}>{activeTab === 'videos' ? 'Select a video file.' : 'You can select multiple files.'}</small>
                 </div>
               </div>
               <div className="modal-footer">
                 <button type="button" className="secondary-btn" onClick={handleCloseModal}>Cancel</button>
-                <button type="submit" className="primary-btn">Save Product</button>
+                <button type="submit" className="primary-btn">{activeTab === 'videos' ? 'Upload Video' : 'Save Product'}</button>
               </div>
             </form>
           </div>

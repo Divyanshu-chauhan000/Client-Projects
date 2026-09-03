@@ -6,7 +6,8 @@ import './Home.css';
 import qrImage from '../assets/data/qrcode_cropped.jpeg';
 
 
-// Import all images from the data folder dynamically as a fallback
+import VideoSection from '../components/VideoSection';
+
 const imageModules = import.meta.glob('../assets/data/*.{jpg,jpeg,png,webp}', { eager: true });
 const allImages = Object.values(imageModules).map(mod => mod.default);
 
@@ -56,6 +57,9 @@ const ImageSlider = ({ images }) => {
     </div>
   );
 };
+
+import heroLaptop from '../assets/data/herolaptop.jpg';
+import heroMobile from '../assets/data/heromobile.jpg';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -224,8 +228,13 @@ const Home = () => {
   return (
     <div className="home-container">
       <div className="hero-section">
-        {/* The text is now baked directly into the background image (hero-banner.jpg) */}
+        <picture>
+          <source media="(max-width: 768px)" srcSet={heroMobile} />
+          <img src={heroLaptop} alt="Hero Banner" style={{ width: '100%', height: 'auto', display: 'block' }} />
+        </picture>
       </div>
+
+      <VideoSection />
 
       <div className="categories-section">
         {loadingProducts ? (
