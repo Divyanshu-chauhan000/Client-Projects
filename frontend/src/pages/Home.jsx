@@ -58,8 +58,8 @@ const ImageSlider = ({ images }) => {
   );
 };
 
-import heroLaptop from '../assets/data/herolaptop.jpg';
-import heroMobile from '../assets/data/heromobile.jpg';
+import heroLaptop from '../assets/data/herolaptop.png';
+import heroMobile from '../assets/data/heromobile.png';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
